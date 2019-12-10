@@ -1,0 +1,6 @@
+************************
+****Règles peuvent etre utilisées****
+************************
+
+
+si Restaurants 3 toques = Vrai alors Très bons restaurants = Vrai

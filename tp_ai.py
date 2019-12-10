@@ -135,6 +135,22 @@ def filtrage(faits,premisses):
 def chainage_avant_avec_conflit():
     brf=filtrage(faits,premisses)
 
+def chainage_arriere(faits,premisses,but):
+    verif=False
+    print("but",but)
+    print(faits)
+    for l in but:
+        print(l)
+        if l in faits:
+            verif=True
+        elif l in conclusions:
+            index=conclusions.index(l)
+            ai.ecrire(f,regles[index])
+            return(chainage_arriere(faits,premisses,premisses[index]))
+        else:
+            verif=False
+    return verif
+
 def init (reglesutil,premisses,faits,conclusions):
     reglesutil=[]
     faits=[]
@@ -195,7 +211,21 @@ if __name__ == '__main__':
                     ai.splitFaits(ai.faits)
                     ai.chainageAvantAvecBut(ai.argPremisses,ai.opPremisses,ai.argFaits,ai.valFaits,ai.conclusions,text.get())
         elif direct=="arriere":
-            print("pas encore developpé")
+            if boolean:
+                f = open(r"trace.txt",'w')
+                ai.ecrire(f,"************************\n****Règles peuvent etre utilisées****\n************************\n\n\n")
+                if not fichier in ["meteorologies",""]:
+                    regles=creationListe(fichier) 
+                    creatListPremissesConclusions(conclusions,premisses,fichier)
+                    cretListFaits(faits,fichier)
+                    print("chainage arrière")
+                    a=[]
+                    a.append(text.get())
+                    test=chainage_arriere(faits,premisses,a)
+                    if test:
+                        print("trouvé")
+                    else:
+                        print("non trouvé")
         else:
             if not boolean:
                 if not fichier in ["meteorologies",""]:
