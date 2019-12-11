@@ -1,0 +1,5 @@
+Parcs verdoyants = Vrai
+Avenues larges = Vrai
+Monuments = Vrai
+Restaurants 3 toques = Vrai
+Ville ancienne = Vrai
