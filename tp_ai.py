@@ -18,11 +18,15 @@ ai.argFaits=[]
 ai.valFaits=[]
 
 
-def creationListe (fichier):
+def creationListe (fichier): 
+    #création de la liste des règles depuis le fichiers
     regles = open(r"regles\{}.txt".format(fichier)).readlines()
     return regles
 
 def creatListPremissesConclusions (conclusions,premisses,fichier):
+    #Crèation des listes de conclusions et de premisses
+    del conclusions[:]
+    del premisses[:]
     filepath = r"regles\{}.txt".format(fichier)
     premisse=[]
     try:
@@ -38,9 +42,10 @@ def creatListPremissesConclusions (conclusions,premisses,fichier):
                     i += 1
                 line = fp.readline()
     except FileNotFoundError:
-        print ("file not found")
+        print ()
 
 def cretListFaits(faits,fichier):
+    #Creatio  de la liste des faits
     filepath = r"faits\{}.txt".format(fichier)
     with open(filepath) as fp:
         line = fp.readline()
@@ -52,11 +57,11 @@ def cretListFaits(faits,fichier):
             i += 1
 
 def saturer(faits,premisses,fichier,regles,reglesutil):
+    #sature la base des faits
     f = open(r"trace.txt",'w')
     creatListPremissesConclusions(conclusions,premisses,fichier)
     changement=True
     brf=[]
-
     while changement==True:
         changement=False
         i=0
@@ -84,6 +89,7 @@ def saturer(faits,premisses,fichier,regles,reglesutil):
     #print(brf)
 
 def chainage_avant_avec_but(faits,premisses,but):
+    #chainage avant avec but
     f = open(r"trace.txt",'w')
     ai.ecrire(f,"************************\n****Règles utilisées****\n************************\n\n\n")
     creatListPremissesConclusions(conclusions,premisses,fichier)
@@ -124,6 +130,7 @@ def chainage_avant_avec_but(faits,premisses,but):
         ai.ecrire(f,"L'agorithme de chainage avant n'a pas atteint le but '{}'".format(but))
 
 def filtrage(faits,premisses):
+    #matekteb feha chay ama bch twalli la brf
     brf=[]
     regles=creationListe(fichier)
     for regle in regles:
@@ -132,15 +139,10 @@ def filtrage(faits,premisses):
                 brf.append(regle)
     return brf
 
-def chainage_avant_avec_conflit():
-    brf=filtrage(faits,premisses)
-
 def chainage_arriere(faits,premisses,but):
+    #chainage arrière
     verif=False
-    print("but",but)
-    print(faits)
     for l in but:
-        print(l)
         if l in faits:
             verif=True
         elif l in conclusions:
@@ -151,6 +153,34 @@ def chainage_arriere(faits,premisses,but):
             verif=False
     return verif
 
+def chainage_avant(faits,premisses,regles,fichier):
+    #chainage avant
+    f = open(r"trace.txt",'w')
+    creatListPremissesConclusions(conclusions,premisses,fichier)
+    brf=[]
+    del reglesutil[:]
+    i=0
+    while i < len(premisses):
+        j=0
+        while j < len(premisses[i]):
+            existe=True
+            if not (premisses[i][j] in faits):
+                existe=False
+                break
+            j+=1
+        if existe==True:
+            if not (conclusions[i] in faits):
+                if not (regles[i] in reglesutil):
+                    reglesutil.append(regles[i])
+                faits.append(conclusions[i])
+                brf.append(regles[i])
+        i+=1
+    ai.ecrire(f,"************************\n****Règles utilisées****\n************************\n\n\n")
+    for i in reglesutil:
+        ai.ecrire(f,i)
+    ai.ecrire(f,"\n\n\n**********************\n****Base des faits****\n**********************\n\n\n")        
+    ai.ecrire(f,str(faits))
+
 def init (reglesutil,premisses,faits,conclusions):
     reglesutil=[]
     faits=[]
@@ -158,6 +188,7 @@ def init (reglesutil,premisses,faits,conclusions):
     conclusions=[]
 
 if __name__ == '__main__':
+    #la fonction qui se lance 
     window = Tk()
     window.title("Systeme expert")
     window.geometry('370x200')
@@ -186,11 +217,11 @@ if __name__ == '__main__':
         if direct=="avant":
             if not boolean:
                 if not fichier in ["meteorologies",""]:
-                    regles=creationListe(fichier) 
-                    creatListPremissesConclusions(conclusions,premisses,fichier)
+                    regles=[]
+                    regles=creationListe(fichier)
                     cretListFaits(faits,fichier)
                     print("chainage avant sans but")
-                    saturer(faits,premisses,fichier,regles,reglesutil)
+                    chainage_avant(faits,premisses,regles,fichier)
                 elif fichier!="":
                     ai.creatListPremissesConclusions (ai.conclusions,ai.premisses,fichier)
                     ai.splitPremisses(ai.premisses)
@@ -200,8 +231,7 @@ if __name__ == '__main__':
                     ai.chainageAvant(ai.argPremisses,ai.opPremisses,ai.argFaits,ai.valFaits,ai.conclusions)
             else:
                 if not fichier in ["meteorologies",""]:
-                    regles=creationListe(fichier) 
-                    creatListPremissesConclusions(conclusions,premisses,fichier)
+                    regles=creationListe(fichier)
                     cretListFaits(faits,fichier)
                     chainage_avant_avec_but(faits,premisses,text.get())
                 elif fichier!="":
@@ -213,7 +243,7 @@ if __name__ == '__main__':
         elif direct=="arriere":
             if boolean:
                 f = open(r"trace.txt",'w')
-                ai.ecrire(f,"************************\n****Règles peuvent etre utilisées****\n************************\n\n\n")
+                ai.ecrire(f,"*************************************\n****Règles peuvent etre utilisées****\n*************************************\n\n\n")
                 if not fichier in ["meteorologies",""]:
                     regles=creationListe(fichier) 
                     creatListPremissesConclusions(conclusions,premisses,fichier)
@@ -223,15 +253,23 @@ if __name__ == '__main__':
                     a.append(text.get())
                     test=chainage_arriere(faits,premisses,a)
                     if test:
-                        print("trouvé")
+                        ai.ecrire(f,"\nTrouvé")
                     else:
-                        print("non trouvé")
+                        ai.ecrire(f,"\nNon trouvé")
+                else:
+                    print("service indisponible")
+            else:
+                print("service indisponible")
         else:
             if not boolean:
                 if not fichier in ["meteorologies",""]:
-                    regles=creationListe(fichier) 
-                    creatListPremissesConclusions(conclusions,premisses,fichier)
+                    del premisses[:]
+                    del faits[:]
+                    del regles[:]
+                    del reglesutil[:]
+                    regles=creationListe(fichier)
                     cretListFaits(faits,fichier)
+                    print("Saturation de {}".format(fichier))
                     saturer(faits,premisses,fichier,regles,reglesutil)
                 elif fichier!="":
                     ai.creatListPremissesConclusions (ai.conclusions,ai.premisses,fichier)

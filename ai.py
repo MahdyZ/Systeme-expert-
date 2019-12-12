@@ -13,7 +13,11 @@ f=''
 
 
 def creatListPremissesConclusions (conclusions,premisses,fichier):
+    #Création de la liste des premisses, règles et conclusions
     filepath = r"regles\{}.txt".format(fichier)
+    del premisses[:]
+    del regles[:]
+    del conclusions[:]
     premisse=[]
     with open(filepath) as fp:
         line = fp.readline()
@@ -28,10 +32,15 @@ def creatListPremissesConclusions (conclusions,premisses,fichier):
             line = fp.readline()   
 
 def splitPremisses (premisses):
+    #Création des listes contenant les arguments, les opérateurs et les valeurs des prémisses
     l=''
     temp=[]
     tempop=[]
     tempval=[]
+    del argPremisses[:]
+    del opPremisses[:]
+    del tempval[:]
+    del valPremisses[:]
     for l in premisses:
         for k in l:
             temp.append(k.split()[0])
@@ -45,7 +54,9 @@ def splitPremisses (premisses):
         tempval=[]
 
 def cretListFaits(faits,fichier):
+    #création de la liste des faits
     filepath = r"faits\{}.txt".format(fichier)
+    del faits[:]
     with open(filepath) as fp:
         line = fp.readline()
         i = 0
@@ -55,17 +66,22 @@ def cretListFaits(faits,fichier):
             i += 1
 
 def splitFaits(faits):
+    #création des liste contenants les arguments et les valeurs des faits
     l=''
+    del argFaits[:]
+    del valFaits[:]
     for l in faits:
         argFaits.append(l.split()[0])
         valFaits.append(l.split()[2])
 
 def ecrire(f,chaine):
+    #fonction d'écriture dans le fichier trace
     f = open(r"trace.txt",'a')
     f.write(str(chaine))
     f.close()
 
 def chainageAvant(argPremisses,opPremisses,argFaits,valFaits,conclusions):
+    #chainage avant
     f = open(r"trace.txt",'w')
     ecrire(f,"************************\n****Règles utilisées****\n************************\n\n\n")
     temp=[]
@@ -79,7 +95,6 @@ def chainageAvant(argPremisses,opPremisses,argFaits,valFaits,conclusions):
         for k in l:
             if not (k in argFaits):
                 break
-
             truth=False
             index=argFaits.index(k)
             if (valFaits[index].isnumeric() and valPremisses[i][j].isnumeric()):
@@ -105,9 +120,7 @@ def chainageAvant(argPremisses,opPremisses,argFaits,valFaits,conclusions):
         if truth:
             argFaits.append(conclusions[i].split()[0])
             valFaits.append(conclusions[i].split()[2])
-            print(temp)
             if not (conclusions[i] in faits):
-                print(temp)
                 temp.append(conclusions[i])
             if not (regles[i] in tempreg):
                 tempreg.append(regles[i])
@@ -119,6 +132,7 @@ def chainageAvant(argPremisses,opPremisses,argFaits,valFaits,conclusions):
     ecrire(f,"\nchainage avant fini")
 
 def chainageAvantAvecBut(argPremisses,opPremisses,argFaits,valFaits,conclusions,but):
+    #chainage avant avec but
     f = open(r"trace.txt",'w')
     ecrire(f,"************************\n****Règles utilisées****\n************************\n\n\n")
     trouve=False
@@ -171,6 +185,7 @@ def chainageAvantAvecBut(argPremisses,opPremisses,argFaits,valFaits,conclusions,
         ecrire(f,"\n\n{} n'est pas trouvé".format(but))
 
 def saturation(argPremisses,opPremisses,argFaits,valFaits,conclusions):
+    #Saturation
     f = open(r"trace.txt",'w')
     ecrire(f,"************************\n****Règles utilisées****\n************************\n\n\n")
     changement=True
@@ -219,6 +234,7 @@ def saturation(argPremisses,opPremisses,argFaits,valFaits,conclusions):
 #splitPremisses(premisses)
 #cretListFaits(faits,fichier)
 #splitFaits(faits)
+#print(len(argPremisses),len(opPremisses),len(argFaits),len(valFaits),len(conclusions))
 #chainageAvant(argPremisses,opPremisses,argFaits,valFaits,conclusions)
 #saturation(argPremisses,opPremisses,argFaits,valFaits,conclusions)
 #but="hdj"
