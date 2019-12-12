@@ -1,6 +1,16 @@
 ************************
-****Règles peuvent etre utilisées****
+****Règles utilisées****
 ************************
 
 
-si Restaurants 3 toques = Vrai alors Très bons restaurants = Vrai
+
+
+
+**********************
+****Base des faits****
+**********************
+
+
+['Parcs verdoyants = Vrai', 'Avenues larges = Vrai', 'Monuments = Vrai', 'Restaurants 3 toques = Vrai', 'Ville ancienne = Vrai', 'Provence = Vrai', 'Bord de mer = Vrai']
+
+L'agorithme de chainage avant a atteint le but 'Restaurants 3 toques = Vrai'
